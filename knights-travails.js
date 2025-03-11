@@ -14,19 +14,17 @@ function KnightBoard(size) {
   class Cell {
     constructor(cell) {
       this.cell = cell;
-      this.moves = [];
+      this.moves = knightMoves
+        // Filters out invalid moves
+        .map((move) => {
+          return [cell[0] + move[0], cell[1] + move[1]];
+        })
+        .filter((move) => {
+          return (
+            move[0] >= 0 && move[0] < size && move[1] >= 0 && move[1] < size
+          );
+        });
     }
-  }
-
-  // Helper function to filter out out of bounds moves
-  function getValidMoves(moves, i, j, size) {
-    return moves
-      .map((move) => {
-        return [i + move[0], j + move[1]];
-      })
-      .filter((move) => {
-        return move[0] >= 0 && move[0] < size && move[1] >= 0 && move[1] < size;
-      });
   }
 
   // Board creation
@@ -34,11 +32,11 @@ function KnightBoard(size) {
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
       board[[i, j]] = new Cell([i, j]);
-      board[[i, j]].moves = getValidMoves(knightMoves, i, j, size);
     }
   }
 
-  // Once the whole board is created, each possible move now points to the cell on the board
+  // Once the whole board is created
+  // Every possible move now points to a node in the board
   for (let cell in board) {
     board[cell].moves = board[cell].moves.map((move) => {
       return board[move];
@@ -101,7 +99,7 @@ function KnightBoard(size) {
 
   function printPath(path) {
     console.log(`You made it in ${path.length} moves! Here's your path:`);
-    path.forEach(elm => console.log(elm));
+    path.forEach((elm) => console.log(elm));
   }
 
   return knightPath;
